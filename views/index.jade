@@ -1,2 +1,9 @@
 h1= title
-p Welcome to #{title}
+table
+  tr
+    th Title
+    th Created_at
+  - each todo in todos
+    tr
+      td= todo.title
+      td= todo.created_at

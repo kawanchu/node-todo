@@ -5,6 +5,9 @@
 
 var express = require('express')
   , routes = require('./routes');
+  
+var ArticleProvider = require('./todoprovider-memory').TodoProvider;
+
 
 var app = module.exports = express.createServer();
 
@@ -27,9 +30,20 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-// Routes
+var todoProvider= new TodoProvider();
 
-app.get('/', routes.index);
+app.get('/', function(req, res){
+  todoProvider.findAll(function(error,todos){
+    res.render('index.jade',
+      { locals:
+        {
+          title: 'Todo',
+          todos: todos
+        }
+      }
+    );
+  })
+});
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
