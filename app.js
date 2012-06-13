@@ -2,6 +2,7 @@ var express = require('express')
   , mongoose = require('mongoose')
   , routes = require('./routes');
 
+var port = process.env.PORT || 3000;
 var uri = process.env.MONGOHQ_URL || 'mongodb://localhost/mongo_data';
 mongoose.connect(uri);
 
@@ -132,6 +133,6 @@ app.get('/todos/:id/delete', function(req, res) {
   });
 });
 
-app.listen(3000, function(){
+app.listen(port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
