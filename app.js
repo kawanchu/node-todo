@@ -34,15 +34,35 @@ var todoProvider= new TodoProvider();
 
 app.get('/', function(req, res){
   todoProvider.findAll(function(error,todos){
-    res.render('index.jade',
+    res.render('todos/index.jade',
       { locals:
         {
-          title: 'Todo',
+          title: 'Todo#Index',
           todos: todos
         }
       }
     );
   })
+});
+
+app.get('/todos/new', function(req, res) {
+  res.render('todos/new.jade',
+    { locals:
+      {
+        title: 'Todo#New'
+      }
+    }
+  );
+});
+
+app.post('/todos/new', function(req, res){
+  todoProvider.save(
+    {
+      title: req.param('title'),
+    }, function(error, docs) {
+      res.redirect('/')
+    }
+  );
 });
 
 app.listen(3000, function(){
