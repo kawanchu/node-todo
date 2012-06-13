@@ -1,17 +1,9 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
+  , mongoose = require('mongoose')
   , routes = require('./routes');
   
-var ArticleProvider = require('./todoprovider-mongodb').TodoProvider;
-
-
+mongoose.connect('mongodb://localhost/node-todo');
 var app = module.exports = express.createServer();
-
-// Configuration
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -30,51 +22,68 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-var todoProvider= new TodoProvider('localhost', 27017);
+var Schema = mongoose.Schema;
+var Todo = new Schema(
+  {
+    title: String
+  }
+);
+
+var TodoModel = mongoose.model('Todo', Todo);
 
 app.get('/', function(req, res){
-  todoProvider.findAll(function(error,todos){
-    res.render('todos/index.jade',
-      { locals:
+  TodoModel.find(function (error, todos) {
+    if (!error) {
+      res.render('todos/index.jade', { locals:
         {
           title: 'Todo#Index',
           todos: todos
         }
-      }
-    );
-  })
+      });
+    } else {
+      //TODO Error Handling
+      console.log(error);
+    }
+  });
 });
-
+ 
 app.get('/todos/new', function(req, res) {
-  res.render('todos/new.jade',
-    { locals:
-      {
-        title: 'Todo#New'
-      }
+  res.render('todos/new.jade',{ locals:
+    {
+      title: 'Todo#New'
     }
-  );
+  });
 });
 
-app.post('/todos/new', function(req, res){
-  todoProvider.save(
+app.post('/todos', function(req, res){
+  var todo = new TodoModel(
     {
-      title: req.param('title'),
-    }, function(error, docs) {
-      res.redirect('/')
+      title: req.param('title')
     }
   );
+  todo.save(function(error){
+    if (!error) {
+      res.redirect('/')
+    } else {
+      //TODO Error Handling
+      console.log(error);
+    }
+  });
 });
 
 app.get('/todos/:id', function(req, res) {
-  todoProvider.findById(req.params.id, function(error, todo) {
-    res.render('todos/show.jade',
-      { locals:
+  TodoModel.findById(req.params.id, function (error, todo) {
+    if (!error) {
+      res.render('todos/show.jade', { locals:
         {
           title: 'Todo#Show',
           todo: todo
         }
-      }
-    );
+      });
+    } else {
+      // TODO Error Handling
+      console.log(error);
+    }
   });
 });
 
