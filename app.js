@@ -6,7 +6,7 @@
 var express = require('express')
   , routes = require('./routes');
   
-var ArticleProvider = require('./todoprovider-memory').TodoProvider;
+var ArticleProvider = require('./todoprovider-mongodb').TodoProvider;
 
 
 var app = module.exports = express.createServer();
@@ -30,7 +30,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-var todoProvider= new TodoProvider();
+var todoProvider= new TodoProvider('localhost', 27017);
 
 app.get('/', function(req, res){
   todoProvider.findAll(function(error,todos){
@@ -64,6 +64,10 @@ app.post('/todos/new', function(req, res){
     }
   );
 });
+
+app.get('/todos/:id'), function(req, res) {
+  
+}
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
