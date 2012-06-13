@@ -23,16 +23,16 @@ app.configure('production', function(){
 });
 
 var Schema = mongoose.Schema;
-var Todo = new Schema(
+var TodoSchema = new Schema(
   {
     title: String
   }
 );
 
-var TodoModel = mongoose.model('Todo', Todo);
+var Todo= mongoose.model('Todo', TodoSchema);
 
 app.get('/', function(req, res){
-  TodoModel.find(function (error, todos) {
+  Todo.find(function (error, todos) {
     if (!error) {
       res.render('todos/index.jade', { locals:
         {
@@ -56,11 +56,7 @@ app.get('/todos/new', function(req, res) {
 });
 
 app.post('/todos', function(req, res){
-  var todo = new TodoModel(
-    {
-      title: req.param('title')
-    }
-  );
+  var todo = new Todo(req.body);
   todo.save(function(error){
     if (!error) {
       res.redirect('/')
@@ -72,7 +68,7 @@ app.post('/todos', function(req, res){
 });
 
 app.get('/todos/:id', function(req, res) {
-  TodoModel.findById(req.params.id, function (error, todo) {
+  Todo.findById(req.params.id, function (error, todo) {
     if (!error) {
       res.render('todos/show.jade', { locals:
         {
@@ -82,6 +78,53 @@ app.get('/todos/:id', function(req, res) {
       });
     } else {
       // TODO Error Handling
+      console.log(error);
+    }
+  });
+});
+
+app.get('/todos/:id/edit', function(req, res) {
+  Todo.findById(req.params.id, function (error, todo) {
+    if (!error) {
+      res.render('todos/edit.jade', { locals:
+        {
+          title: 'Todo#Edit',
+          todo: todo
+        }
+      });
+    } else {
+      // TODO Error Handling
+      console.log(error);
+    }
+  });
+});
+
+// PUT Method使えない?
+app.post('/todos/:id', function(req, res){
+  Todo.update({_id: req.params.id }, req.body, function (error) {
+    if (!error) {
+      res.redirect('/todos/'+req.params.id);
+    } else {
+      // TODO Error Handling
+      console.log(error);
+    }
+  });
+});
+
+// DELETE Method 使えない?
+app.get('/todos/:id/delete', function(req, res) {
+  Todo.findById(req.params.id, function(error, todo) {
+    if(!error){
+      todo.remove(function(delete_error) {
+        if(!delete_error) {
+          res.redirect('/')
+        } else {
+          //TODO Error Handling
+          console.log(delete_error);
+        }
+      });
+    } else {
+      //TODO Error Handling
       console.log(error);
     }
   });

@@ -1,0 +1,10 @@
+h1= title
+form(action='/todos/'+todo._id, method= 'POST')
+  div
+    div
+      span Title :
+      input(type='text', name='title', value=todo.title)
+    div
+      input(type='submit', value='Update')
+br
+a(href='/') Top

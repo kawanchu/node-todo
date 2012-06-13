@@ -2,7 +2,9 @@ h1= title
 table
   tr
     th Title
-    th Created_at
   tr
     td= todo.title
-    td= todo.created_at
+br
+a(href='/') Top
+&nbsp;
+a(href='/todos/'+todo._id+'/edit') Edit
