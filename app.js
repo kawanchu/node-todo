@@ -65,9 +65,18 @@ app.post('/todos/new', function(req, res){
   );
 });
 
-app.get('/todos/:id'), function(req, res) {
-  
-}
+app.get('/todos/:id', function(req, res) {
+  todoProvider.findById(req.params.id, function(error, todo) {
+    res.render('todos/show.jade',
+      { locals:
+        {
+          title: 'Todo#Show',
+          todo: todo
+        }
+      }
+    );
+  });
+});
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
