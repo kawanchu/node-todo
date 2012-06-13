@@ -1,8 +1,10 @@
 var express = require('express')
   , mongoose = require('mongoose')
   , routes = require('./routes');
-  
-mongoose.connect('mongodb://localhost/node-todo');
+
+var uri = process.env.MONGOHQ_URL || 'mongodb://localhost/mongo_data';
+mongoose.connect(uri);
+
 var app = module.exports = express.createServer();
 
 app.configure(function(){
