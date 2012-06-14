@@ -35,6 +35,14 @@ var TodoSchema = new Schema(
 var Todo= mongoose.model('Todo', TodoSchema);
 
 app.get('/', function(req, res){
+  res.render('index.jade', { locals:
+    {
+      title: 'Menu'
+    }
+  });
+});
+
+app.get('/todos', function(req, res){
   Todo.find(function (error, todos) {
     if (!error) {
       res.render('todos/index.jade', { locals:
@@ -62,7 +70,7 @@ app.post('/todos', function(req, res){
   var todo = new Todo(req.body);
   todo.save(function(error){
     if (!error) {
-      res.redirect('/')
+      res.redirect('/todos')
     } else {
       //TODO Error Handling
       console.log(error);
@@ -129,6 +137,14 @@ app.get('/todos/:id/delete', function(req, res) {
     } else {
       //TODO Error Handling
       console.log(error);
+    }
+  });
+});
+
+app.get('/chats', function(req, res){
+  res.render('chats/index.jade', { locals:
+    {
+      title: 'Chat#Index'
     }
   });
 });

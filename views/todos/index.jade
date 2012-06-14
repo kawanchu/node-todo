@@ -1,5 +1,5 @@
-h1= title
-a(href="/todos/new") New Todo
+h2= title
+a(href='/todos/new') New Todo
 br
 br
 table
@@ -10,8 +10,8 @@ table
     tr
       td= todo.title
       th
-        a(href="/todos/"+todo._id) Show
+        a(href='/todos/'+todo._id) Show
         &nbsp;
-        a(href="/todos/"+todo._id+"/edit") Edit
+        a(href='/todos/'+todo._id+'/edit') Edit
         &nbsp;
-        a(href="/todos/"+todo._id+"/delete") Destroy
+        a(href='/todos/'+todo._id+'/delete') Destroy
