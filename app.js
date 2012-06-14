@@ -128,7 +128,7 @@ app.get('/todos/:id/delete', function(req, res) {
     if(!error){
       todo.remove(function(delete_error) {
         if(!delete_error) {
-          res.redirect('/')
+          res.redirect('/todos')
         } else {
           //TODO Error Handling
           console.log(delete_error);
