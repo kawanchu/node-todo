@@ -3,8 +3,8 @@ var express = require('express')
   , routes = require('./routes')
   , socketIO = require('socket.io');
 
-var port = process.env.PORT || 3000;
-var uri = process.env.MONGOHQ_URL || 'mongodb://localhost/mongo_data';
+var port = process.env.PORT || 3000; //for heroku
+var uri = process.env.MONGOHQ_URL || 'mongodb://localhost/mongo_data'; //for heroku
 mongoose.connect(uri);
 
 var app = module.exports = express.createServer();
@@ -155,10 +155,15 @@ app.listen(port, function(){
 });
 
 var socket = socketIO.listen(app);
+
+// for heroku
+socket.configure(function () { 
+  socket.set("transports", ["xhr-polling"]); 
+  socket.set("polling duration", 10); 
+});
+
 socket.on('connection', function(client) {
-  console.log(client.sessionId+'connecting');
   client.on('message', function(message) {
-    console.log(client.sessionId+'send a message ('+ message + ')');
     client.send(message);
     client.broadcast.emit('message', message);
   });
