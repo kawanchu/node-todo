@@ -1,6 +1,7 @@
 var express = require('express')
   , mongoose = require('mongoose')
-  , routes = require('./routes');
+  , routes = require('./routes')
+  , socketIO = require('socket.io');
 
 var port = process.env.PORT || 3000;
 var uri = process.env.MONGOHQ_URL || 'mongodb://localhost/mongo_data';
@@ -151,4 +152,14 @@ app.get('/chats', function(req, res){
 
 app.listen(port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+});
+
+var socket = socketIO.listen(app);
+socket.on('connection', function(client) {
+  console.log(client.sessionId+'connecting');
+  client.on('message', function(message) {
+    console.log(client.sessionId+'send a message ('+ message + ')');
+    client.send(message);
+    client.broadcast.emit('message', message);
+  });
 });
