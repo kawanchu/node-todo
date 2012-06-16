@@ -32,8 +32,14 @@ var TodoSchema = new Schema(
     title: String
   }
 );
+var ChatSchema = new Schema(
+  {
+    message: String
+  }
+);
 
 var Todo= mongoose.model('Todo', TodoSchema);
+var Chat= mongoose.model('Chat', ChatSchema);
 
 app.get('/', function(req, res){
   res.render('index.jade', { locals:
@@ -143,9 +149,17 @@ app.get('/todos/:id/delete', function(req, res) {
 });
 
 app.get('/chats', function(req, res){
-  res.render('chats/index.jade', { locals:
-    {
-      title: 'Chat#Index'
+  Chat.find(function (error, chats) {
+    if (!error) {
+      res.render('chats/index.jade', { locals:
+        {
+          title: 'Chat#Index',
+          chats: chats
+        }
+      });
+    } else {
+      //TODO Error Handling
+      console.log(error);
     }
   });
 });
@@ -163,8 +177,33 @@ socket.configure(function () {
 });
 
 socket.on('connection', function(client) {
-  client.on('message', function(message) {
-    client.send(message);
-    client.broadcast.emit('message', message);
+  client.on('send-message', function(message) {
+    var chat = new Chat({message: message});
+    chat.save(function(error){
+      if (!error) {
+        client.emit('receive-message', chat);
+        client.broadcast.emit('receive-message', chat);
+      } else {
+      }
+    });
+  });
+  client.on('delete-message', function(chatId){
+    Chat.findById(chatId, function(error, chat) {
+      if(!error){
+        chat.remove(function(delete_error) {
+          if(!delete_error) {
+            client.emit('delete-message', chatId);
+            client.broadcast.emit('delete-message', chatId);
+          } else {
+            //TODO Error Handling
+            console.log(delete_error);
+          }
+        });
+      } else {
+        //TODO Error Handling
+        console.log(error);
+      }
+    });
+    
   });
 });
