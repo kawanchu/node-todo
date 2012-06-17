@@ -8,5 +8,6 @@
     , "mongodb": ""
     , "mongoose": ""
     , "socket.io": ""
+    , "haml": ""
   }
 }

@@ -164,6 +164,15 @@ app.get('/chats', function(req, res){
   });
 });
 
+app.get('/backbone', function(req, res){
+  res.render('backbone/index.jade', { locals:
+    {
+      title: 'Backbone#Index'
+    }
+  });
+});
+
+
 app.listen(port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
