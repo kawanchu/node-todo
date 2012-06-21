@@ -8,6 +8,6 @@
     , "mongodb": ""
     , "mongoose": ""
     , "socket.io": ""
-    , "haml": ""
+    , "coffee-script": ""
   }
 }
