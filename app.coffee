@@ -106,6 +106,11 @@ app.get "/chats", (req, res) ->
     else
       console.log error
 
+app.get "/backbone", (req, res) ->
+  res.render "backbone/index.jade",
+    locals:
+      title: "Backbone#Index"
+
 app.listen port, ->
   console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 

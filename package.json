@@ -9,5 +9,6 @@
     , "mongoose": ""
     , "socket.io": ""
     , "coffee-script": ""
+    , "backbone": ""
   }
 }
