@@ -6,9 +6,11 @@ port = process.env.PORT or 3000
 uri = process.env.MONGOHQ_URL or "mongodb://localhost/mongo_data"
 mongoose.connect uri
 app = module.exports = express.createServer()
+
 app.configure ->
   app.set "views", __dirname + "/views"
-  app.set "view engine", "jade"
+  app.register '.coffee', require('coffeekup').adapters.express
+  app.set "view engine", "coffee"
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use app.router
@@ -28,15 +30,16 @@ TodoSchema = new Schema(title: String)
 ChatSchema = new Schema(message: String)
 Todo = mongoose.model("Todo", TodoSchema)
 Chat = mongoose.model("Chat", ChatSchema)
+
 app.get "/", (req, res) ->
-  res.render "index.jade",
+  res.render "index.coffee",
     locals:
       title: "Menu"
 
 app.get "/todos", (req, res) ->
   Todo.find (error, todos) ->
     unless error
-      res.render "todos/index.jade",
+      res.render "todos/index.coffee",
         locals:
           title: "Todo#Index"
           todos: todos
@@ -44,7 +47,7 @@ app.get "/todos", (req, res) ->
       console.log error
 
 app.get "/todos/new", (req, res) ->
-  res.render "todos/new.jade",
+  res.render "todos/new.coffee",
     locals:
       title: "Todo#New"
 
@@ -59,7 +62,7 @@ app.post "/todos", (req, res) ->
 app.get "/todos/:id", (req, res) ->
   Todo.findById req.params.id, (error, todo) ->
     unless error
-      res.render "todos/show.jade",
+      res.render "todos/show.coffee",
         locals:
           title: "Todo#Show"
           todo: todo
@@ -69,7 +72,7 @@ app.get "/todos/:id", (req, res) ->
 app.get "/todos/:id/edit", (req, res) ->
   Todo.findById req.params.id, (error, todo) ->
     unless error
-      res.render "todos/edit.jade",
+      res.render "todos/edit.coffee",
         locals:
           title: "Todo#Edit"
           todo: todo
@@ -99,7 +102,7 @@ app.get "/todos/:id/delete", (req, res) ->
 app.get "/chats", (req, res) ->
   Chat.find (error, chats) ->
     unless error
-      res.render "chats/index.jade",
+      res.render "chats/index.coffee",
         locals:
           title: "Chat#Index"
           chats: chats
@@ -107,7 +110,7 @@ app.get "/chats", (req, res) ->
       console.log error
 
 app.get "/backbone", (req, res) ->
-  res.render "backbone/index.jade",
+  res.render "backbone/index.coffee",
     locals:
       title: "Backbone#Index"
 

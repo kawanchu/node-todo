@@ -10,5 +10,6 @@
     , "socket.io": ""
     , "coffee-script": ""
     , "backbone": ""
+    , "coffeekup": ""
   }
 }
