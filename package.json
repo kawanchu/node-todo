@@ -8,7 +8,7 @@
     , "mongodb": ""
     , "mongoose": ""
     , "socket.io": ""
-    , "coffee-script": ""
+    , "coffee-script": "1.1.2"
     , "backbone": ""
     , "coffeekup": ""
   }
