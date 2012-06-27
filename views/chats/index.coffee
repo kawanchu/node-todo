@@ -9,8 +9,6 @@ coffeescript ->
         message = $("<span>").html(chat.message)
         deletelink = $("<span>").append($("<a>").attr('id', chat._id).attr('class', 'delete-link').attr('href', '#').html('×'))
         container.append(deletelink).append(message)
-        console.log(container)
-        
         $("#messages").append(container)
 
       socket.on "delete-message", (chatId) ->

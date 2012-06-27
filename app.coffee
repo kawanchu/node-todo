@@ -2,6 +2,7 @@ express = require("express")
 mongoose = require("mongoose")
 routes = require("./routes")
 socketIO = require("socket.io")
+
 port = process.env.PORT or 3000
 uri = process.env.MONGOHQ_URL or "mongodb://localhost/mongo_data"
 mongoose.connect uri
@@ -26,7 +27,7 @@ app.configure "production", ->
   app.use express.errorHandler()
 
 Schema = mongoose.Schema
-TodoSchema = new Schema(title: String)
+TodoSchema = new Schema(title: String, done: Boolean)
 ChatSchema = new Schema(message: String)
 Todo = mongoose.model("Todo", TodoSchema)
 Chat = mongoose.model("Chat", ChatSchema)
@@ -38,66 +39,18 @@ app.get "/", (req, res) ->
 
 app.get "/todos", (req, res) ->
   Todo.find (error, todos) ->
-    unless error
-      res.render "todos/index.coffee",
-        locals:
-          title: "Todo#Index"
-          todos: todos
+    unless error    
+      res.json todos
     else
       console.log error
-
-app.get "/todos/new", (req, res) ->
-  res.render "todos/new.coffee",
-    locals:
-      title: "Todo#New"
-
+      
 app.post "/todos", (req, res) ->
   todo = new Todo(req.body)
   todo.save (error) ->
     unless error
-      res.redirect "/todos"
+      res.json success: true
     else
-      console.log error
-
-app.get "/todos/:id", (req, res) ->
-  Todo.findById req.params.id, (error, todo) ->
-    unless error
-      res.render "todos/show.coffee",
-        locals:
-          title: "Todo#Show"
-          todo: todo
-    else
-      console.log error
-
-app.get "/todos/:id/edit", (req, res) ->
-  Todo.findById req.params.id, (error, todo) ->
-    unless error
-      res.render "todos/edit.coffee",
-        locals:
-          title: "Todo#Edit"
-          todo: todo
-    else
-      console.log error
-
-app.post "/todos/:id", (req, res) ->
-  Todo.update
-    _id: req.params.id
-  , req.body, (error) ->
-    unless error
-      res.redirect "/todos/" + req.params.id
-    else
-      console.log error
-
-app.get "/todos/:id/delete", (req, res) ->
-  Todo.findById req.params.id, (error, todo) ->
-    unless error
-      todo.remove (delete_error) ->
-        unless delete_error
-          res.redirect "/todos"
-        else
-          console.log delete_error
-    else
-      console.log error
+      res.json success: false
 
 app.get "/chats", (req, res) ->
   Chat.find (error, chats) ->
@@ -110,9 +63,7 @@ app.get "/chats", (req, res) ->
       console.log error
 
 app.get "/backbone", (req, res) ->
-  res.render "backbone/index.coffee",
-    locals:
-      title: "Backbone#Index"
+  res.render "backbone/index.coffee"
 
 app.listen port, ->
   console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
