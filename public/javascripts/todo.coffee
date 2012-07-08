@@ -18,7 +18,6 @@ $ ->
     
     template: CoffeeKup.compile ->
       div '.view', ->
-        input 'toggle', type: 'checkbox'
         span @title
         a 'destroy', href: "#"
     
