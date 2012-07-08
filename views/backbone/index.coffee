@@ -1,11 +1,11 @@
-# TODO npmを使用するように変更したい
 # script src:'/javascripts/json2.js'
-script src:'http://code.jquery.com/jquery-1.7.2.min.js'
-script src:'http://underscorejs.org/underscore-min.js'
-script src:'http://backbonejs.org/backbone-min.js'
+script src: 'http://underscorejs.org/underscore-min.js'
+script src: 'http://code.jquery.com/jquery-1.7.2.min.js'
+script src: 'http://backbonejs.org/backbone-min.js'
+script src: 'vendor/coffeekup/lib/coffeekup.js'
 
 coffeescript ->
-  $ ->
+  $ ->    
     Todo = Backbone.Model.extend(
       defaults: ->
         title: ""
@@ -22,7 +22,8 @@ coffeescript ->
     
     TodoView = Backbone.View.extend(
       tagName: "li" 
-      template: _.template($('#item-template').html())
+      template: CoffeeKup.compile ->
+        div @title
            
       initialize: ->
 
@@ -68,11 +69,4 @@ div "#backbone-todo", ->
     input type:'text', id:'new-todo'
     
   section "#main", ->
-    ul "#todo-list", ->
-
-# TODO CoffeeKupのTemplateをうまく使えるようにしたい      
-script type: "text/template", id: "item-template", '''
-  <div>
-    <%= title %>
-  </div> 
-'''  
+    ul "#todo-list", -> 
