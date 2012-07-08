@@ -7,6 +7,7 @@ script src: 'vendor/coffeekup/lib/coffeekup.js'
 coffeescript ->
   $ ->
     Todo = Backbone.Model.extend
+      idAttribute: "_id"
       defaults: ->
         title: ""
         done: false
@@ -32,6 +33,7 @@ coffeescript ->
         "click a.destroy": "clear"
       
       initialize: ->
+        @model.bind 'destroy', @remove, this
 
       clear: ->
         @model.clear()
