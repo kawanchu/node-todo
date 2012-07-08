@@ -5,38 +5,47 @@ script src: 'http://backbonejs.org/backbone-min.js'
 script src: 'vendor/coffeekup/lib/coffeekup.js'
 
 coffeescript ->
-  $ ->    
-    Todo = Backbone.Model.extend(
+  $ ->
+    Todo = Backbone.Model.extend
       defaults: ->
         title: ""
         done: false
-        initialize: ->
-      )
-    
-    TodoList = Backbone.Collection.extend(
+      clear: ->
+        @destroy()
+
+    TodoList = Backbone.Collection.extend
       model: Todo
       url: "/todos"
-    )
-    
+
     Todos = new TodoList
-    
-    TodoView = Backbone.View.extend(
+
+    TodoView = Backbone.View.extend
       tagName: "li" 
+      
+      # TODO ここを切り出したい!
       template: CoffeeKup.compile ->
-        div @title
-           
+        div ->
+          span @title
+          a 'destroy', href: "#", -> 'destroy'
+      
+      events:
+        "click a.destroy": "clear"
+      
       initialize: ->
+
+      clear: ->
+        @model.clear()
 
       render: ->
         @$el.html @template(@model.toJSON())
-      )
-    
-    AppView = Backbone.View.extend(
-      el: $("#backbone-todo")
       
+      
+    AppView = Backbone.View.extend
+      el: $("#backbone-todo")
+
       events:
         "keypress #new-todo": "addTodo"
-        
+
       initialize: ->
         @input = @$("#new-todo")
         Todos.bind "add", @addOne, this
@@ -44,22 +53,21 @@ coffeescript ->
         Todos.bind "all", @render, this
         @main = $('#main')
         Todos.fetch()
-      
+
       render: ->
         @main.show()
-        
+
       addOne: (todo) ->
         view = new TodoView(model: todo)
         @$("#todo-list").append view.render()
-      
+
       addTodo: (e) ->
         return  unless e.keyCode is 13
         Todos.create title: @input.val()
         @input.val ""
-      
+
       addAll: ->
         Todos.each(@addOne)
-    )
     
     App = new AppView
 

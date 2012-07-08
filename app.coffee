@@ -52,6 +52,18 @@ app.post "/todos", (req, res) ->
     else
       res.json success: false
 
+app.delete "/todos/:id", (req, res) ->
+  console.log '---destroy---'
+  Todo.findById req.params.id, (error, todo) ->
+    unless error
+      todo.remove (delete_error) ->
+        unless delete_error
+          res.json success: true
+        else
+          res.json success: false
+    else
+      res.json success: false
+
 app.get "/chats", (req, res) ->
   Chat.find (error, chats) ->
     unless error
@@ -64,6 +76,9 @@ app.get "/chats", (req, res) ->
 
 app.get "/backbone", (req, res) ->
   res.render "backbone/index.coffee"
+  
+app.get "/envolve", (req, res) ->
+  res.render "envolve/index.coffee"
 
 app.listen port, ->
   console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
