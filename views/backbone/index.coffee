@@ -3,79 +3,16 @@ script src: 'http://underscorejs.org/underscore-min.js'
 script src: 'http://code.jquery.com/jquery-1.7.2.min.js'
 script src: 'http://backbonejs.org/backbone-min.js'
 script src: 'vendor/coffeekup/lib/coffeekup.js'
+link rel: 'stylesheet', href: 'stylesheets/todo.css'
 
-coffeescript ->
-  $ ->
-    Todo = Backbone.Model.extend
-      idAttribute: "_id"
-      defaults: ->
-        title: ""
-        done: false
-      clear: ->
-        @destroy()
+# development only !
+script src: 'http://jashkenas.github.com/coffee-script/extras/coffee-script.js'
+script src: 'javascripts/todo.coffee', type: 'text/coffeescript'
 
-    TodoList = Backbone.Collection.extend
-      model: Todo
-      url: "/todos"
+h2 -> "Bacbone#Index"
 
-    Todos = new TodoList
-
-    TodoView = Backbone.View.extend
-      tagName: "li" 
-      
-      # TODO ここを切り出したい!
-      template: CoffeeKup.compile ->
-        div ->
-          span @title
-          a 'destroy', href: "#", -> 'destroy'
-      
-      events:
-        "click a.destroy": "clear"
-      
-      initialize: ->
-        @model.bind 'destroy', @remove, this
-
-      clear: ->
-        @model.clear()
-
-      render: ->
-        @$el.html @template(@model.toJSON())
-      
-      
-    AppView = Backbone.View.extend
-      el: $("#backbone-todo")
-
-      events:
-        "keypress #new-todo": "addTodo"
-
-      initialize: ->
-        @input = @$("#new-todo")
-        Todos.bind "add", @addOne, this
-        Todos.bind "reset", @addAll, this
-        Todos.bind "all", @render, this
-        @main = $('#main')
-        Todos.fetch()
-
-      render: ->
-        @main.show()
-
-      addOne: (todo) ->
-        view = new TodoView(model: todo)
-        @$("#todo-list").append view.render()
-
-      addTodo: (e) ->
-        return  unless e.keyCode is 13
-        Todos.create title: @input.val()
-        @input.val ""
-
-      addAll: ->
-        Todos.each(@addOne)
-    
-    App = new AppView
-
-div "#backbone-todo", ->
+div "#todoapp", ->
   header ->
-    h2 -> "Bacbone#Index"
     input type:'text', id:'new-todo'
     
   section "#main", ->
